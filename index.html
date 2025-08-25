@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KBC Quiz App</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0a0a23;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #1e1e2f;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .question {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .options button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+      background: #2e3a59;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .options button:hover {
+      background: #4c5b82;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    #nextBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #ffc107;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #nextBtn:hover {
+      background-color: #e0a800;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1> KBC Quiz App</h1>
+    <div class="question" id="question">Loading question...</div>
+    <div class="options" id="options"></div>
+    <div class="result" id="result"></div>
+    <button id="nextBtn" onclick="nextQuestion()">Next Question</button>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: "Which planet is known as the Red Planet?",
+        options: ["Earth", "Mars", "Venus", "Jupiter"],
+        answer: "Mars"
+      },
+      {
+        question: "Who wrote the Indian national anthem?",
+        options: ["Bankim Chandra Chatterjee", "Rabindranath Tagore", "Mahatma Gandhi", "Jawaharlal Nehru"],
+        answer: "Rabindranath Tagore"
+      },
+      {
+        question: "How many continents are there on Earth?",
+        options: ["5", "6", "7", "8"],
+        answer: "7"
+      },
+      {
+        question: "What is the capital of Australia?",
+        options: ["Sydney", "Canberra", "Melbourne", "Perth"],
+        answer: "Canberra"
+      },
+      {
+        question: "Which is the largest mammal?",
+        options: ["Elephant", "Blue Whale", "Shark", "Giraffe"],
+        answer: "Blue Whale"
+      }
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const resultEl = document.getElementById("result");
+    const nextBtn = document.getElementById("nextBtn");
+
+    function loadQuestion() {
+      resultEl.textContent = "";
+      const currentQuestion = quizData[currentIndex];
+      questionEl.textContent = currentQuestion.question;
+
+      optionsEl.innerHTML = "";
+      currentQuestion.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.onclick = () => selectAnswer(btn, currentQuestion.answer);
+        optionsEl.appendChild(btn);
+      });
+
+      nextBtn.style.display = "none";
+    }
+
+    function selectAnswer(btn, correctAnswer) {
+      const allButtons = optionsEl.querySelectorAll("button");
+      allButtons.forEach(b => b.disabled = true);
+
+      if (btn.textContent === correctAnswer) {
+        btn.style.backgroundColor = "green";
+        resultEl.textContent = "Correct!";
+        score++;
+      } else {
+        btn.style.backgroundColor = "red";
+        resultEl.textContent = ` Wrong! Correct Answer: ${correctAnswer}`;
+      }
+
+      nextBtn.style.display = "inline-block";
+    }
+
+    function nextQuestion() {
+      currentIndex++;
+      if (currentIndex < quizData.length) {
+        loadQuestion();
+      } else {
+        showFinalScore();
+      }
+    }
+
+    function showFinalScore() {
+      questionEl.textContent = "🎉 Quiz Completed!";
+      optionsEl.innerHTML = "";
+      resultEl.innerHTML = `You scored <strong>${score}</strong> out of ${quizData.length}!`;
+      nextBtn.style.display = "none";
+    }
+
+    // Initial load
+    loadQuestion();
+  </script>
+
+</body>
+</html>
